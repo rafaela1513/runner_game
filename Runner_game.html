@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruuner Game</title>
+    <style>
+        canva {
+            background: blue;
+            display: block;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // Jogador
+        const player = {
+            x: 50,
+            y: 300,
+            width: 30,
+            height: 30,
+            color: "pink",
+            velocityY: 0,
+            gravity: 0.5,
+            jumpPower: -10,
+            isJumping: false
+        };
+
+        //Osbtaculos
+        const obstacles = [];
+        let frameCount = 0;
+        let gameOver = false;
+
+        function drawPlayer() {
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.width, player.heigth);
+        }
+
+        function drawObstacles() {
+            ctx.fillStyle = "black"
+            obstacles.forEach(obstacle => {
+                ctx.fillRect(obstacle.x, obstacle.y, obstacle.widht, obstacle.heigth);
+            })
+        }
+
+        function uptadeObstacles() {
+            if (frameCount % 100 === 0) {
+                obstacles.push({ x: canvas.width, y: 320, width: 20, height: 50, speed: 4 });
+            }
+            obstacles.ForEach(obstacle => obstacle.x -= obstacle.speed);
+            obstacles.filter(obstacle => obstacle.x + obstacle.width > 0);
+        }
+
+        function applyPhysics() {
+            player.velocity += player.gravity;
+            player.y +=player.velocityY;
+            if (player.y >= 300) {
+                player.y = 300;
+                player.isJumping = false;
+            }
+        }
+
+        function checkCollision() {
+            obstacles.forEach(obstacle => {
+                if (player.x < obstacle.x + obstacle.width &&
+                    player.x + player.width > obstacle.x &&
+                    player.y < obstacle.y + obstacle.height &&
+                    player.y + obstacle.height > obstacle.y) {
+                    gameOver = true;
+                }
+            });
+        }
+
+        function gameLoop() {
+            if (gameOver) {
+                ctx.fillStyle = "black";
+                ctx.font = "30px Arial";
+                ctx.fillText("Game Over", canvas.widht, canvas.height);
+                return;
+            }
+            ctx.clearRect(0, 0, canvas.widht, canvas.widht / 2 - 70, canvas.height / 2);
+            drawnPlayer();
+            drawnObstacles();
+            applyPhysics();
+            updateObstacles();
+            checkCollision():
+            framecount++
+            requestAnimationFrame(gameloop);
+        }
+       window.addEventListener("keydown", function (event))
+        if(event.code === "space" && !player.isJumping) {
+            Player.velocityY = player.jumpPower;
+            Player.isJumping = true;
+        }
+        gameloop();
+    </script>  
+</body>
+</html>
